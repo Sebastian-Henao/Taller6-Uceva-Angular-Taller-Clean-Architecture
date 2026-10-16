@@ -7,4 +7,4 @@ export interface Personaje {
     rol: RolCategoria;
 }
 
-export type RolCategoria = 'Vanguardia' | 'Ladron' | 'Jefe' | 'Ilusionista' | 'Explorador;'
+export type RolCategoria = 'Vanguardia' | 'Ladron' | 'Jefe' | 'Ilusionista' | 'Explorador';
