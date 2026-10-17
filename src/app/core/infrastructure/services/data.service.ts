@@ -5,6 +5,8 @@ import { Observable, of } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { Product, ProductCategory } from "../../domain/models/product.model";
 import { User, UserEngineering } from "../../domain/models/user.model";
+import { Jungler } from "../../domain/models/jungler.model";
+import { ALL_20_JUNGLERS } from "../../../mocks/junglers.mocks";
 
 /**
  * Servicio de infraestructura para obtención de datos.
@@ -197,6 +199,37 @@ export class DataService {
      */
     getAllProductsSpringBoot(countProducts: number): Observable<Product[]> {
         return this.httpClient.get<Product[]>(`${this.springBootUrl}/products/${countProducts}`);
+    }
+
+    /**
+     * Obtiene el listado de junglers desde datos locales en memoria.
+     *
+     * @param countJunglers - Cantidad de junglers a solicitar
+     * @returns Observable que emite un arreglo de {@link Jungler}
+     */
+    getAllJunglersLocal(countJunglers: number): Observable<Jungler[]> {
+        const limit = Math.min(Math.max(countJunglers, 1), ALL_20_JUNGLERS.length);
+        return of(ALL_20_JUNGLERS.slice(0, limit));
+    }
+
+    /**
+     * Obtiene el listado de junglers desde el backend Node.js.
+     *
+     * @param countJunglers - Cantidad de junglers a solicitar
+     * @returns Observable que emite un arreglo de {@link Jungler}
+     */
+    getAllJunglersNode(countJunglers: number): Observable<Jungler[]> {
+        return this.httpClient.get<Jungler[]>(`${this.nodeUrl}/junglers/${countJunglers}`);
+    }
+
+    /**
+     * Obtiene el listado de junglers desde el backend SpringBoot.
+     *
+     * @param countJunglers - Cantidad de junglers a solicitar
+     * @returns Observable que emite un arreglo de {@link Jungler}
+     */
+    getAllJunglersSpringBoot(countJunglers: number): Observable<Jungler[]> {
+        return this.httpClient.get<Jungler[]>(`${this.springBootUrl}/junglers/${countJunglers}`);
     }
 
 }
