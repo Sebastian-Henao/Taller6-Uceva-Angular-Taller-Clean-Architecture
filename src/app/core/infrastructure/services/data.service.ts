@@ -16,13 +16,13 @@ import { User, UserEngineering } from "../../domain/models/user.model";
  * diferentes orígenes:
  *
  * - Datos locales simulados (mocks)
- * - Backend Node.js mediante HTTP
+ * - Backends Node.js y Spring Boot mediante HTTP
  *
  * ❗ No contiene lógica de negocio.
  * ❗ No debe ser consumido directamente por los casos de uso.
  *
- * Es utilizado por repositorios o servicios de infraestructura
- * que adaptan los datos al dominio.
+ * Es utilizado por los repositorios de infraestructura, que adaptan estas
+ * fuentes al contrato del dominio.
  */
 @Injectable({ providedIn: 'root' })
 export class DataService {

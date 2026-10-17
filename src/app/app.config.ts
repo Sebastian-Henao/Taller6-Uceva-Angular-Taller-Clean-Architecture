@@ -48,10 +48,42 @@ export const appConfig: ApplicationConfig = {
    */
   providers: [
 
-    //Local Providers
-    { provide: UserRepository, useClass: UserLocalRepositoryImpl },
-    { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
-
+    UserLocalRepositoryImpl,
+    UserNodeRepositoryImpl,
+    UserSpringBootRepositoryImpl,
+    {
+      provide: UserRepository,
+      useFactory: () => {
+        switch (environment.userDataSource) {
+          case 'local':
+            return inject(UserLocalRepositoryImpl);
+          case 'node':
+            return inject(UserNodeRepositoryImpl);
+          case 'springboot':
+            return inject(UserSpringBootRepositoryImpl);
+          default:
+            throw new Error(`Fuente de datos de usuarios no soportada: ${environment.userDataSource}`);
+        }
+      },
+    },
+    ProductLocalRepositoryImpl,
+    ProductNodeRepositoryImpl,
+    ProductSpringBootRepositoryImpl,
+    {
+      provide: ProductRepository,
+      useFactory: () => {
+        switch (environment.productDataSource) {
+          case 'local':
+            return inject(ProductLocalRepositoryImpl);
+          case 'node':
+            return inject(ProductNodeRepositoryImpl);
+          case 'springboot':
+            return inject(ProductSpringBootRepositoryImpl);
+          default:
+            throw new Error(`Fuente de datos de productos no soportada: ${environment.productDataSource}`);
+        }
+      },
+    },
     MusicLocalRepositoryImpl,
     MusicNodeRepositoryImpl,
     MusicSpringBootRepositoryImpl,
@@ -66,18 +98,12 @@ export const appConfig: ApplicationConfig = {
           case 'springboot':
             return inject(MusicSpringBootRepositoryImpl);
           default:
-            throw new Error(`Fuente de datos de música no soportada: ${environment.musicDataSource}`);
+            throw new Error(
+              `Fuente de datos de música no soportada: ${environment.musicDataSource}`,
+            );
         }
       },
     },
-    
-    //Node Providers
-    //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },
-    //{ provide: ProductRepository, useClass: ProductNodeRepositoryImpl },
-
-    //SpringBoot Providers
-    //{ provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
-    //{ provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.
@@ -110,5 +136,5 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     provideHttpClient(),
-  ]
+  ],
 };
