@@ -10,6 +10,10 @@ import { UserSpringBootRepositoryImpl } from './core/infrastructure/repositories
 import { ProductSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/product-springboot.repository.impl';
 import { UserLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/user-local.repository.impl';
 import { ProductLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/product-local.repository.impl';
+import { PersonajeRepository } from './core/domain/repositories/personaje.repository';
+import { PersonajesLocalRepositorieImpl } from './core/infrastructure/repositories/local-implementation/personajes-local.repositorie.impl';
+import { PersonajeNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/personaje-node.repository.impl';
+import { PersonajeSpringbootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/personaje-springboot.repository.impl';
 
 /**
  * Configuración principal de la aplicación Angular.
@@ -41,14 +45,21 @@ export const appConfig: ApplicationConfig = {
     //Local Providers
     { provide: UserRepository, useClass: UserLocalRepositoryImpl },
     { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
+    /**
+     * Selecciona la fuente local de personajes para la aplicación.
+     * Puede sustituirse por la implementación Node.js o Spring Boot.
+     */
+    { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
     
     //Node Providers
     //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },
     //{ provide: ProductRepository, useClass: ProductNodeRepositoryImpl },
+    //{ provide: PersonajeRepository, useClass: PersonajeNodeRepositoryImpl },
 
     //SpringBoot Providers
     //{ provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
     //{ provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
+    //{ provide: PersonajeRepository, useClass: PersonajeSpringbootRepositoryImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.

@@ -5,6 +5,7 @@ import { Observable, of } from "rxjs";
 import { environment } from "../../../../environments/environment";
 import { Product, ProductCategory } from "../../domain/models/product.model";
 import { User, UserEngineering } from "../../domain/models/user.model";
+import { Personaje, RolCategoria } from "../../domain/models/personaje.model";
 
 /**
  * Servicio de infraestructura para obtención de datos.
@@ -110,6 +111,38 @@ export class DataService {
     }
 
     /**
+     * Genera un listado de personajes de ejemplo con datos locales.
+     *
+     * @param countPersonajes - Cantidad de personajes a generar.
+     * @returns Observable que emite personajes con roles válidos.
+     *
+     * @remarks
+     * Los valores se generan con Faker y se devuelven sin realizar
+     * solicitudes HTTP.
+     */
+    getAllPersonajesLocal(countPersonajes: number): Observable<Personaje[]> {
+        const personajes: Personaje[] = [];
+        const rolCategory: RolCategoria[] = [
+            'Vanguardia',
+            'Ladron',
+            'Jefe',
+            'Ilusionista',
+            'Explorador'
+        ];
+        for(let i = 1; i <= countPersonajes; i++) {
+            personajes.push({
+                id: i,
+                nombre: faker.person.fullName(),
+                alias: faker.word.noun(),
+                juego: faker.company.name(),
+                habilidad: faker.commerce.productName(),
+                rol: faker.helpers.arrayElement(rolCategory),
+            })
+        }
+        return of(personajes);
+    }
+
+    /**
      * Obtiene el listado de usuarios desde el backend Node.js.
      *
      * @remarks
@@ -155,6 +188,19 @@ export class DataService {
     }
 
     /**
+     * Obtiene personajes desde el backend Node.js.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Node.js.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
+    getAllPersonajesNode(countPersonajes: number): Observable<Personaje[]> {
+        return this.httpClient.get<Personaje[]>(`${this.nodeUrl}/personajes/${countPersonajes}`);
+    }
+    /**
      * Obtiene el listado de usuarios desde el backend SpringBoot.
      *
      * @remarks
@@ -197,6 +243,20 @@ export class DataService {
      */
     getAllProductsSpringBoot(countProducts: number): Observable<Product[]> {
         return this.httpClient.get<Product[]>(`${this.springBootUrl}/products/${countProducts}`);
+    }
+
+    /**
+     * Obtiene personajes desde el backend Spring Boot.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Spring Boot.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
+    getAllPersonajesSpringBoot(countPersonajes: number): Observable<Personaje[]> {
+        return this.httpClient.get<Personaje[]>(`${this.springBootUrl}/personajes/${countPersonajes}`);
     }
 
 }
