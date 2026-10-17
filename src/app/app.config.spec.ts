@@ -8,10 +8,8 @@ import { UserLocalRepositoryImpl } from './core/infrastructure/repositories/loca
 import { MusicLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/music-local.repository.impl';
 import { ProductNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/product-node.repository.impl';
 import { UserNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/user-node.repository.impl';
-import { MusicNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/music-node.repository.impl';
 import { ProductSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/product-springboot.repository.impl';
 import { UserSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/user-springboot.repository.impl';
-import { MusicSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/music-springboot.repository.impl';
 import { environment } from '../environments/environment';
 
 jest.mock('@faker-js/faker', () => ({ faker: {} }));
@@ -41,11 +39,6 @@ describe('repository providers', () => {
       ProductNodeRepositoryImpl,
       ProductSpringBootRepositoryImpl,
     ]],
-    ['music', MusicRepository, 'musicDataSource', [
-      MusicLocalRepositoryImpl,
-      MusicNodeRepositoryImpl,
-      MusicSpringBootRepositoryImpl,
-    ]],
   ] as const)(
     'selects local, Node.js, and Spring Boot implementations for %s',
     (_module, repository, sourceProperty, implementations) => {
@@ -64,7 +57,6 @@ describe('repository providers', () => {
   it.each([
     ['users', UserRepository, 'userDataSource', 'Fuente de datos de usuarios no soportada'],
     ['products', ProductRepository, 'productDataSource', 'Fuente de datos de productos no soportada'],
-    ['music', MusicRepository, 'musicDataSource', 'Fuente de datos de música no soportada'],
   ] as const)(
     'fails explicitly for an unsupported %s data source',
     (_module, repository, sourceProperty, errorMessage) => {
@@ -72,6 +64,16 @@ describe('repository providers', () => {
       TestBed.configureTestingModule({ providers: appConfig.providers });
 
       expect(() => TestBed.inject(repository)).toThrow(`${errorMessage}: unsupported`);
+    },
+  );
+
+  it.each(['local', 'node', 'springboot'] as const)(
+    'uses the local implementation for music when the configured source is %s',
+    (source) => {
+      environment.musicDataSource = source;
+      TestBed.configureTestingModule({ providers: appConfig.providers });
+
+      expect(TestBed.inject(MusicRepository)).toBeInstanceOf(MusicLocalRepositoryImpl);
     },
   );
 });
