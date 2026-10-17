@@ -9,6 +9,10 @@ module.exports = {
     "<rootDir>/dist/",
   ],
 
+  moduleNameMapper: {
+    '^@faker-js/faker$': '<rootDir>/src/app/mocks/faker.mock.ts',
+  },
+
   verbose: true,
   testEnvironment: "jsdom",
   collectCoverage: true,

@@ -4,9 +4,11 @@ import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../../environments/environment';
 import { Product } from '../../domain/models/product.model';
 import { User } from '../../domain/models/user.model';
+import { Jungler } from '../../domain/models/jungler.model';
 import { DataService } from './data.service';
 import { USERS_MOCK } from '../../../mocks/users.mocks';
 import { PRODUCTS_MOCK } from '../../../mocks/products.mocks';
+import { JUNGLERS_MOCK } from '../../../mocks/junglers.mocks';
 
 jest.mock('@faker-js/faker', () => ({
   faker: {
@@ -107,6 +109,32 @@ describe('DataService', () => {
     const req = httpMock.expectOne(`${pathUrlSpringBoot}/products/${countProducts}`);
     expect(req.request.method).toBe('GET');
     req.flush(PRODUCTS_MOCK);
+  });
+
+  it('debe devolver el listado de junglers locale', (done) => {
+    service.getAllJunglersLocal(3).subscribe((junglers: Jungler[]) => {
+      expect(junglers.length).toBe(3);
+      expect(junglers[0].name).toBe('Lee Sin');
+      done();
+    });
+  });
+
+  it('debe obtener junglers desde Node por HTTP', () => {
+    service.getAllJunglersNode(3).subscribe((junglers) => {
+      expect(junglers).toEqual(JUNGLERS_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlNode}/junglers/3`);
+    expect(req.request.method).toBe('GET');
+    req.flush(JUNGLERS_MOCK);
+  });
+
+  it('debe obtener junglers desde SpringBoot por HTTP', () => {
+    service.getAllJunglersSpringBoot(3).subscribe((junglers) => {
+      expect(junglers).toEqual(JUNGLERS_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/junglers/3`);
+    expect(req.request.method).toBe('GET');
+    req.flush(JUNGLERS_MOCK);
   });
 
 });
