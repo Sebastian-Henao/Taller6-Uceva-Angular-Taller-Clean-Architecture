@@ -1,0 +1,36 @@
+<table class="table table-striped border">
+	<thead>
+		<tr>
+			<th scope="col">Id</th>
+			<th scope="col">Campeón</th>
+			<th scope="col">Título</th>
+			<th scope="col">Rol</th>
+			<th scope="col">Dificultad</th>
+			<th scope="col">Región</th>
+			<th scope="col">Habilidades Clave</th>
+		</tr>
+	</thead>
+	<tbody>
+		@for (jungler of junglers; track jungler) {
+			<tr>
+				<th scope="row">{{ jungler.id }}</th>
+				<td><strong>{{ jungler.name }}</strong></td>
+				<td>{{ jungler.title }}</td>
+				<td>
+					<dsb-badge-atom
+						[text]="jungler.role"
+						[type]="roleMap[jungler.role]">
+					</dsb-badge-atom>
+				</td>
+				<td>
+					<dsb-badge-atom
+						[text]="jungler.difficulty"
+						[type]="difficultyMap[jungler.difficulty]">
+					</dsb-badge-atom>
+				</td>
+				<td>{{ jungler.region }}</td>
+				<td><small class="text-muted">{{ jungler.mainAbilities }}</small></td>
+			</tr>
+		}
+	</tbody>
+</table>

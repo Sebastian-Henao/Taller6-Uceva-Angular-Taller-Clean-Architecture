@@ -14,6 +14,16 @@
  * this.http.get(`${environment.baseUrl}/users`);
  * ```
  */
+/** Fuentes de datos disponibles para los repositorios de la aplicación. */
+export type DataSource = 'local' | 'node' | 'springboot';
+
+/**
+ * Valores de configuración usados durante la ejecución de la aplicación.
+ *
+ * @remarks
+ * Las fuentes locales generan datos de demostración; las fuentes remotas
+ * requieren que el backend correspondiente esté disponible.
+ */
 export const environment = {
   /**
    * URL base del backend en NodeJS de la aplicación.

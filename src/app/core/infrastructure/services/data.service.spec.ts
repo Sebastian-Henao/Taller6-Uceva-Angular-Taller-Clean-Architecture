@@ -4,9 +4,15 @@ import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../../environments/environment';
 import { Product } from '../../domain/models/product.model';
 import { User } from '../../domain/models/user.model';
+import { Jungler } from '../../domain/models/jungler.model';
 import { DataService } from './data.service';
 import { USERS_MOCK } from '../../../mocks/users.mocks';
 import { PRODUCTS_MOCK } from '../../../mocks/products.mocks';
+import { JUNGLERS_MOCK } from '../../../mocks/junglers.mocks';
+import { Personaje } from '../../domain/models/personaje.model';
+import { PERSONAJES_MOCK } from '../../../mocks/personajes.mocks';
+import { Music } from '../../domain/models/music.model';
+import { MUSIC_MOCK } from '../../../mocks/music.mocks';
 
 jest.mock('@faker-js/faker', () => ({
   faker: {
@@ -17,6 +23,13 @@ jest.mock('@faker-js/faker', () => ({
     person: {
       firstName: jest.fn(() => 'Juan'),
       lastName: jest.fn(() => 'Pérez'),
+      fullName: jest.fn(() => 'Juan Pérez'),
+    },
+    word: {
+      noun: jest.fn(() => 'Alias Test'),
+    },
+    company: {
+      name: jest.fn(() => 'Juego Test'),
     },
     number: {
       int: jest.fn(() => 30),
@@ -36,6 +49,8 @@ describe('DataService', () => {
   
   const countUsers = 5;
   const countProducts = 5;
+  const countPersonajes = 5;
+  const countMusic = 5;
   const pathUrlNode = `${environment.baseUrlNode}/api`;
   const pathUrlSpringBoot = `${environment.baseUrlSpringBoot}/api`;
 
@@ -73,6 +88,38 @@ describe('DataService', () => {
     });
   });
 
+  it('debe devolver el listado de personajes local', (done) => {
+    service.getAllPersonajesLocal(countPersonajes).subscribe((personajes: Personaje[]) => {
+      expect(personajes.length).toEqual(countPersonajes);
+      expect(personajes).toEqual(
+        Array.from({ length: countPersonajes }, (_, index) => ({
+          id: index + 1,
+          nombre: 'Juan Pérez',
+          alias: 'Alias Test',
+          juego: 'Juego Test',
+          habilidad: 'Producto Test',
+          rol: 'Vanguardia',
+        }))
+      );
+      done();
+    });
+  });
+
+  it('debe devolver el listado de música local', (done) => {
+    service.getAllMusicLocal(countMusic).subscribe((music: Music[]) => {
+      expect(music).toHaveLength(countMusic);
+      expect(music[0]).toEqual({
+        id: 1,
+        title: 'Producto Test',
+        durationSeconds: 30,
+        genre: expect.any(String),
+        artistId: 1,
+        albumId: 1,
+      });
+      done();
+    });
+  });
+
   it('debe obtener usuarios desde Node por HTTP', () => {
     service.getAllUsersNode(countUsers).subscribe((users) => {
       expect(users).toEqual(USERS_MOCK);
@@ -89,6 +136,24 @@ describe('DataService', () => {
     const req = httpMock.expectOne(`${pathUrlNode}/products/${countProducts}`);
     expect(req.request.method).toBe('GET');
     req.flush(PRODUCTS_MOCK);
+  });
+
+  it('debe obtener personajes desde Node por HTTP', () => {
+    service.getAllPersonajesNode(countPersonajes).subscribe((perosonajes) => {
+      expect(perosonajes).toEqual(PERSONAJES_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlNode}/personajes/${countPersonajes}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(PERSONAJES_MOCK);
+  });
+
+  it('debe obtener música desde Node por HTTP', () => {
+    service.getAllMusicNode(countMusic).subscribe((music) => {
+      expect(music).toEqual(MUSIC_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlNode}/music/${countMusic}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(MUSIC_MOCK);
   });
 
   it('debe obtener usuarios desde SpringBoot por HTTP', () => {
@@ -109,4 +174,47 @@ describe('DataService', () => {
     req.flush(PRODUCTS_MOCK);
   });
 
+  it('debe devolver el listado de junglers locale', (done) => {
+    service.getAllJunglersLocal(3).subscribe((junglers: Jungler[]) => {
+      expect(junglers.length).toBe(3);
+      expect(junglers[0].name).toBe('Lee Sin');
+      done();
+    });
+  });
+
+  it('debe obtener junglers desde Node por HTTP', () => {
+    service.getAllJunglersNode(3).subscribe((junglers) => {
+      expect(junglers).toEqual(JUNGLERS_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlNode}/junglers/3`);
+    expect(req.request.method).toBe('GET');
+    req.flush(JUNGLERS_MOCK);
+  });
+
+  it('debe obtener junglers desde SpringBoot por HTTP', () => {
+    service.getAllJunglersSpringBoot(3).subscribe((junglers) => {
+      expect(junglers).toEqual(JUNGLERS_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/junglers/3`);
+    expect(req.request.method).toBe('GET');
+    req.flush(JUNGLERS_MOCK);
+  });
+
+  it('debe obtener personajes desde SpringBoot por HTTP', () => {
+    service.getAllPersonajesSpringBoot(countPersonajes).subscribe((personajes) => {
+      expect(personajes).toEqual(PERSONAJES_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/personajes/${countPersonajes}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(PERSONAJES_MOCK);
+  });
+
+  it('debe obtener música desde SpringBoot por HTTP', () => {
+    service.getAllMusicSpringBoot(countMusic).subscribe((music) => {
+      expect(music).toEqual(MUSIC_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/songs`);
+    expect(req.request.method).toBe('GET');
+    req.flush(MUSIC_MOCK);
+  });
 });

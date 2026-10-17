@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
 import { UsersPage } from './presentation/pages/users/users.page';
 import { ProductsPage } from './presentation/pages/products/products.page';
+import { JunglersPage } from './presentation/pages/junglers/junglers.page';
+import { MusicPage } from './presentation/pages/music/music.page';
+import { PersonajesPage } from './presentation/pages/personajes/personajes.page';
 
 /**
  * Definición de las rutas principales de la aplicación.
@@ -16,6 +19,9 @@ import { ProductsPage } from './presentation/pages/products/products.page';
  *
  * @see {@link UsersPage}
  * @see {@link ProductsPage}
+ * @see {@link JunglersPage}
+ * @see {@link MusicPage}
+ * @see {@link PersonajesPage}
  */
 export const routes: Routes = [
 
@@ -36,6 +42,17 @@ export const routes: Routes = [
    * de mostrar y gestionar el listado de productos.
    */
   { path: 'products', component: ProductsPage },
+
+  /**
+   * Ruta de junglers de League of Legends.
+   *
+   * @remarks
+   * Renderiza el componente `JunglersPage`, encargado
+   * de mostrar y gestionar el listado de campeones junglers.
+   */
+  { path: 'junglers', component: JunglersPage },
+  { path: 'music', component: MusicPage },
+  { path: 'personajes', component: PersonajesPage },
 
   /**
    * Ruta comodín.
