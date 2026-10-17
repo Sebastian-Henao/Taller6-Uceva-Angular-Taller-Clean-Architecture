@@ -110,27 +110,16 @@ export const appConfig: ApplicationConfig = {
         }
       },
     },
-    MusicLocalRepositoryImpl,
-    MusicNodeRepositoryImpl,
-    MusicSpringBootRepositoryImpl,
-    {
-      provide: MusicRepository,
-      useFactory: () => {
-        switch (environment.musicDataSource) {
-          case 'local':
-            return inject(MusicLocalRepositoryImpl);
-          case 'node':
-            return inject(MusicNodeRepositoryImpl);
-          case 'springboot':
-            return inject(MusicSpringBootRepositoryImpl);
-          default:
-            throw new Error(
-              `Fuente de datos de música no soportada: ${environment.musicDataSource}`,
-            );
-        }
-      },
-    },
     { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
+
+    // Local Providers
+    { provide: MusicRepository, useClass: MusicLocalRepositoryImpl },
+
+    // Node Providers
+    // { provide: MusicRepository, useClass: MusicNodeRepositoryImpl },
+
+    // SpringBoot Providers
+    // { provide: MusicRepository, useClass: MusicSpringBootRepositoryImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.
