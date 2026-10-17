@@ -1,73 +1,77 @@
-# Angular Clean Architecture
+# Arquitectura limpia con Angular
 
-Frontend Angular standalone con tres módulos: usuarios, productos y música.
-La presentación depende de casos de uso; los casos de uso dependen de
-contratos del dominio, y la infraestructura implementa esos contratos.
+Aplicación frontend con Angular standalone y tres módulos: usuarios, productos
+y música. La capa de presentación depende de casos de uso; estos dependen de
+contratos del dominio, implementados por la capa de infraestructura.
 
 ## Estructura
 
 ```text
 src/app/
 ├── core/
-│   ├── domain/                 # Modelos y contratos de repositorios
+│   ├── domain/                 # Modelos y contratos de repositorio
 │   ├── application/usecases/   # Casos de uso
-│   └── infrastructure/        # Servicios HTTP y repositorios
+│   └── infrastructure/        # Servicios HTTP y repositorios concretos
 ├── presentation/
 │   ├── components/
 │   └── pages/
-├── app.config.ts              # Providers
+├── app.config.ts              # Proveedores
 └── app.routes.ts              # Rutas
 ```
 
 ## Requisitos y ejecución
 
-Requiere Node.js y npm compatibles con Angular 20.
+Se requieren Node.js y npm compatibles con Angular 20.
 
 ```bash
 npm ci
 npm run start
 ```
 
-Abre `http://localhost:4200`. La fuente local de música permite probar el
-módulo sin ejecutar un backend.
+Abre `http://localhost:4200`. La fuente de datos local permite probar los
+módulos sin ejecutar un backend.
 
 ## Módulos y APIs
 
-| Módulo | Ruta frontend | Operación backend |
+| Módulo | Ruta del frontend | Operación del backend |
 | --- | --- | --- |
 | Usuarios | `/users` | `GET /api/users/{count}` |
 | Productos | `/products` | `GET /api/products/{count}` |
 | Música | `/music` | `GET /api/music/{count}` |
 
-La fuente de datos de música se selecciona en
-`src/environments/environment.ts` mediante `musicDataSource`:
+La fuente de datos se selecciona independientemente por módulo en
+`src/environments/environment.ts`:
 
 ```ts
-musicDataSource: 'local', // 'node' o 'springboot'
+userDataSource: 'local',
+productDataSource: 'local',
+musicDataSource: 'local',
 ```
 
-Los adaptadores HTTP esperan que ambos backends implementen
-`GET /api/music/{count}` y respondan con una lista cuyos elementos tengan
-`id`, `title`, `artist`, `album`, `genre` y `releaseYear`. Las URLs base están
-configuradas en el mismo archivo: Node.js usa `http://localhost:3000` y
-Spring Boot usa `http://localhost:8080`.
+Cada campo acepta `local`, `node` o `springboot`. La fuente local genera datos
+de demostración. Node.js y Spring Boot usan las URL base configuradas en el
+mismo archivo: `http://localhost:3000` y `http://localhost:8080`,
+respectivamente. Ambos servidores deben implementar los tres endpoints y
+responder con arreglos que respeten los modelos de cada módulo.
 
-Documentación de API disponible al iniciar los backends:
+La documentación de las API está disponible al iniciar los servidores:
 
 - Node.js: `http://localhost:3000/api/docs`
 - Spring Boot: `http://localhost:8080/api/swagger-ui/index.html`
 
-Este repositorio contiene solo el frontend; no incluye los proyectos de
-backend. Por ello, la documentación técnica detallada y los documentos
-Swagger/OpenAPI de los backends deben mantenerse en sus respectivos
-repositorios. El endpoint y el contrato nuevos de música quedan especificados
-arriba para que ambos backends puedan implementarlos.
+Este repositorio solo contiene el frontend, no los proyectos de servidor.
+[`docs/backend-integration.md`](docs/backend-integration.md) describe el
+contrato esperado por Angular y [`docs/openapi.yaml`](docs/openapi.yaml) lo
+especifica en OpenAPI 3.1 para facilitar su implementación y validación en
+ambos servidores. Estos documentos describen el contrato que consume el
+cliente; la documentación Swagger publicada por cada servidor debe mantenerse
+y validarse en el repositorio correspondiente.
 
-`MusicPage` usa `GetAllMusicUseCase`; los adaptadores local, Node.js y Spring
-Boot son intercambiables mediante el provider de `MusicRepository`. No se
-consumen servicios HTTP directamente desde los componentes.
+Cada página consume el caso de uso de su módulo. Los adaptadores local,
+Node.js y Spring Boot se seleccionan mediante los proveedores de repositorio;
+los componentes no acceden directamente a los servicios HTTP ni a las API.
 
-## Pruebas y documentación Angular
+## Pruebas y documentación de Angular
 
 ```bash
 npm test -- --runInBand
@@ -75,16 +79,17 @@ npm run test:coverage -- --runInBand
 npm run compodoc
 ```
 
-Las pruebas unitarias verifican casos de uso, proveedores, repositorios,
-servicios y componentes. Compodoc genera la documentación Angular en
-`documentation/`.
+Las pruebas unitarias verifican los casos de uso, proveedores, repositorios,
+servicios y componentes. Jest exige una cobertura global mínima del 90% en
+sentencias, ramas, funciones y líneas. Compodoc genera la documentación de
+Angular en `documentation/`.
 
-## Estándar de commits
+## Estándar de los commits
 
-Usa Conventional Commits con mensajes breves en imperativo, por ejemplo:
+Usa Conventional Commits con mensajes breves en imperativo. Por ejemplo:
 
 ```text
-feat(music): add music catalogue module
-test(music): cover repository providers
-docs(readme): document music API contract
+feat(musica): agregar catálogo de canciones
+test(musica): probar selección de proveedores
+docs(readme): documentar contrato de API musical
 ```

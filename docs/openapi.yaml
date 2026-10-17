@@ -1,0 +1,122 @@
+openapi: 3.1.0
+info:
+  title: Contrato de APIs del taller
+  version: 1.0.0
+  description: >
+    Contrato esperado por el frontend Angular para las APIs de Node.js y Spring
+    Boot. Cada servidor publica su propia instancia bajo el prefijo /api.
+servers:
+  - url: http://localhost:3000/api
+    description: Backend Node.js
+  - url: http://localhost:8080/api
+    description: Backend Spring Boot
+paths:
+  /users/{count}:
+    get:
+      operationId: getUsers
+      summary: Obtener usuarios
+      parameters:
+        - name: count
+          in: path
+          required: true
+          description: Cantidad de usuarios solicitados.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de usuarios.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /products/{count}:
+    get:
+      operationId: getProducts
+      summary: Obtener productos
+      parameters:
+        - name: count
+          in: path
+          required: true
+          description: Cantidad de productos solicitados.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de productos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+  /music/{count}:
+    get:
+      operationId: getMusic
+      summary: Obtener canciones
+      parameters:
+        - name: count
+          in: path
+          required: true
+          description: Cantidad de canciones solicitadas.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lista de canciones.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Music'
+components:
+  schemas:
+    User:
+      type: object
+      required: [id, name, lastName, age, email, engineering]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        lastName:
+          type: string
+        age:
+          type: integer
+        email:
+          type: string
+        engineering:
+          type: string
+          enum: [Sistemas, Electronica, Biomedica, Industrial, Ambiental]
+    Product:
+      type: object
+      required: [id, name, category, price]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+          enum: [Lacteos, Carnes, Frutas, Verduras]
+        price:
+          type: number
+    Music:
+      type: object
+      required: [id, title, artist, album, genre, releaseYear]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        artist:
+          type: string
+        album:
+          type: string
+        genre:
+          type: string
+          enum: [Pop, Rock, Jazz, Hip-hop, Clásica]
+        releaseYear:
+          type: integer
