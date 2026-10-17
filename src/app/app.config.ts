@@ -26,6 +26,8 @@ import { MusicSpringBootRepositoryImpl } from './core/infrastructure/repositorie
 import { environment } from '../environments/environment';
 import { PersonajeRepository } from './core/domain/repositories/personaje.repository';
 import { PersonajesLocalRepositorieImpl } from './core/infrastructure/repositories/local-implementation/personajes-local.repositorie.impl';
+import { PersonajeNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/personaje-node.repository.impl';
+import { PersonajeSpringbootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/personaje-springboot.repository.impl';
 
 /**
  * Configuración principal de la aplicación Angular.
@@ -54,72 +56,26 @@ export const appConfig: ApplicationConfig = {
    */
   providers: [
 
-    UserLocalRepositoryImpl,
-    UserNodeRepositoryImpl,
-    UserSpringBootRepositoryImpl,
-    {
-      provide: UserRepository,
-      useFactory: () => {
-        switch (environment.userDataSource) {
-          case 'local':
-            return inject(UserLocalRepositoryImpl);
-          case 'node':
-            return inject(UserNodeRepositoryImpl);
-          case 'springboot':
-            return inject(UserSpringBootRepositoryImpl);
-          default:
-            throw new Error(`Fuente de datos de usuarios no soportada: ${environment.userDataSource}`);
-        }
-      },
-    },
-    ProductLocalRepositoryImpl,
-    ProductNodeRepositoryImpl,
-    ProductSpringBootRepositoryImpl,
-    {
-      provide: ProductRepository,
-      useFactory: () => {
-        switch (environment.productDataSource) {
-          case 'local':
-            return inject(ProductLocalRepositoryImpl);
-          case 'node':
-            return inject(ProductNodeRepositoryImpl);
-          case 'springboot':
-            return inject(ProductSpringBootRepositoryImpl);
-          default:
-            throw new Error(`Fuente de datos de productos no soportada: ${environment.productDataSource}`);
-        }
-      },
-    },
-    JunglerLocalRepositoryImpl,
-    JunglerNodeRepositoryImpl,
-    JunglerSpringBootRepositoryImpl,
-    {
-      provide: JunglerRepository,
-      useFactory: () => {
-        switch (environment.junglerDataSource) {
-          case 'local':
-            return inject(JunglerLocalRepositoryImpl);
-          case 'node':
-            return inject(JunglerNodeRepositoryImpl);
-          case 'springboot':
-            return inject(JunglerSpringBootRepositoryImpl);
-          default:
-            throw new Error(
-              `Fuente de datos de junglers no soportada: ${environment.junglerDataSource}`,
-            );
-        }
-      },
-    },
-    { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
-
-    // Local Providers
-    { provide: MusicRepository, useClass: MusicLocalRepositoryImpl },
+    //Local Providers
+    //{ provide: UserRepository, useClass: UserLocalRepositoryImpl },
+    //{ provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
+    //{ provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
+    //{ provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
+    //{ provide: MusicRepository, useClass: MusicLocalRepositoryImpl },
 
     // Node Providers
-    // { provide: MusicRepository, useClass: MusicNodeRepositoryImpl },
+    //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },
+    //{ provide: ProductRepository, useClass: ProductNodeRepositoryImpl },
+    //{ provide: PersonajeRepository, useClass: PersonajeNodeRepositoryImpl },
+    //{ provide: JunglerRepository, useClass: JunglerNodeRepositoryImpl },
+    //{ provide: MusicRepository, useClass: MusicNodeRepositoryImpl },
 
-    // SpringBoot Providers
-    // { provide: MusicRepository, useClass: MusicSpringBootRepositoryImpl },
+    //SpringBoot Providers
+    { provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
+    { provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
+    { provide: PersonajeRepository, useClass: PersonajeSpringbootRepositoryImpl },
+    { provide: JunglerRepository, useClass: JunglerSpringBootRepositoryImpl },
+    { provide: MusicRepository, useClass: MusicSpringBootRepositoryImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.

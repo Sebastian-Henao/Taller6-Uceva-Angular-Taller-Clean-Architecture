@@ -8,7 +8,7 @@ import { User, UserEngineering } from "../../domain/models/user.model";
 import { Jungler } from "../../domain/models/jungler.model";
 import { ALL_20_JUNGLERS } from "../../../mocks/junglers.mocks";
 import { Personaje, RolCategoria } from "../../domain/models/personaje.model";
-import { Music, MusicGenre } from "../../domain/models/music.model";
+import { Music } from "../../domain/models/music.model";
 
 /**
  * Servicio de infraestructura para obtención de datos.
@@ -149,17 +149,17 @@ export class DataService {
      * Genera un listado de canciones de ejemplo con datos locales.
      */
     getAllMusicLocal(count: number): Observable<Music[]> {
-        const genres: MusicGenre[] = ['Pop', 'Rock', 'Jazz', 'Hip-hop', 'Clásica'];
+        const genres = ['Pop', 'Rock', 'Jazz', 'Hip-hop', 'Clásica'];
         const music: Music[] = [];
 
         for (let id = 1; id <= count; id++) {
             music.push({
                 id,
                 title: faker.commerce.productName(),
-                artist: `${faker.person.firstName()} ${faker.person.lastName()}`,
-                album: faker.commerce.productName(),
+                durationSeconds: faker.number.int({ min: 60, max: 600 }),
                 genre: faker.helpers.arrayElement(genres),
-                releaseYear: faker.number.int({ min: 1960, max: 2025 }),
+                artistId: id,
+                albumId: id,
             });
         }
 
@@ -325,8 +325,8 @@ export class DataService {
     /**
      * Obtiene canciones desde el backend Spring Boot.
      */
-    getAllMusicSpringBoot(count: number): Observable<Music[]> {
-        return this.httpClient.get<Music[]>(`${this.springBootUrl}/music/${count}`);
+    getAllMusicSpringBoot(_count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.springBootUrl}/songs`);
     }
 
 }

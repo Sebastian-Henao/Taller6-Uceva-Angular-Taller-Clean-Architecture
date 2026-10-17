@@ -9,8 +9,15 @@ import { DataService } from '../../services/data.service';
  */
 @Injectable()
 export class MusicSpringBootRepositoryImpl extends MusicRepository {
+  /** Servicio que realiza las solicitudes HTTP a Spring Boot. */
   private readonly dataService = inject(DataService);
 
+  /**
+   * Recupera canciones desde la API Spring Boot.
+   *
+   * @param count Cantidad de canciones solicitadas.
+   * @returns Flujo observable con las canciones recibidas.
+   */
   getAll(count: number): Observable<Music[]> {
     return this.dataService.getAllMusicSpringBoot(count);
   }

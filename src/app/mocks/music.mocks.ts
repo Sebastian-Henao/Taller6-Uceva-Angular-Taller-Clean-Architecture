@@ -4,9 +4,9 @@ export const MUSIC_MOCK: Music[] = [
   {
     id: 1,
     title: 'Midnight Echo',
-    artist: 'Ari Sol',
-    album: 'Night Signals',
+    durationSeconds: 210,
     genre: 'Pop',
-    releaseYear: 2024,
+    artistId: 1,
+    albumId: 1,
   },
 ];

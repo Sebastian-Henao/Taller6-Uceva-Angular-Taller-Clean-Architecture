@@ -9,5 +9,6 @@ import { Music } from '../../../core/domain/models/music.model';
   templateUrl: './music-table.component.html',
 })
 export class MusicTableComponent {
+  /** Canciones que se muestran en las filas de la tabla. */
   @Input() music: Music[] = [];
 }

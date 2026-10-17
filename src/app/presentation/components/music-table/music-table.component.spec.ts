@@ -17,10 +17,10 @@ describe('MusicTableComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent).toContain('Midnight Echo');
-    expect(fixture.nativeElement.textContent).toContain('Ari Sol');
-    expect(fixture.nativeElement.textContent).toContain('Night Signals');
+    expect(fixture.nativeElement.textContent).toContain('210');
     expect(fixture.nativeElement.textContent).toContain('Pop');
-    expect(fixture.nativeElement.textContent).toContain('2024');
+    expect(fixture.nativeElement.textContent).toContain('ID artista');
+    expect(fixture.nativeElement.textContent).toContain('ID álbum');
   });
 
   it('renders an empty state when the catalogue has no songs', () => {
