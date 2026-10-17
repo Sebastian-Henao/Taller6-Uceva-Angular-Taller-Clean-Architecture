@@ -57,11 +57,11 @@ export const appConfig: ApplicationConfig = {
   providers: [
 
     //Local Providers
-    //{ provide: UserRepository, useClass: UserLocalRepositoryImpl },
-    //{ provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
-    //{ provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
-    //{ provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
-    //{ provide: MusicRepository, useClass: MusicLocalRepositoryImpl },
+    { provide: UserRepository, useClass: UserLocalRepositoryImpl },
+    { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
+    { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
+    { provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
+    { provide: MusicRepository, useClass: MusicLocalRepositoryImpl },
 
     // Node Providers
     //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },
@@ -71,11 +71,11 @@ export const appConfig: ApplicationConfig = {
     //{ provide: MusicRepository, useClass: MusicNodeRepositoryImpl },
 
     //SpringBoot Providers
-    { provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
-    { provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
-    { provide: PersonajeRepository, useClass: PersonajeSpringbootRepositoryImpl },
-    { provide: JunglerRepository, useClass: JunglerSpringBootRepositoryImpl },
-    { provide: MusicRepository, useClass: MusicSpringBootRepositoryImpl },
+    //{ provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
+    //{ provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
+    //{ provide: PersonajeRepository, useClass: PersonajeSpringbootRepositoryImpl },
+    //{ provide: JunglerRepository, useClass: JunglerSpringBootRepositoryImpl },
+    //{ provide: MusicRepository, useClass: MusicSpringBootRepositoryImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.
