@@ -1,128 +1,90 @@
-# Clean Architecture en Angular
+# Angular Clean Architecture
 
-```
-src/app
-│
-├── core
-│   ├── domain
-│   │   ├── models
-│   │   │   ├── user.model.ts
-│   │   │   └── product.model.ts
-│   │   └── repositories
-│   │       ├── user.repository.ts
-│   │       └── product.repository.ts
-│   │
-│   ├── application
-│   │   └── use-cases
-│   │       ├── get-all-users.usecase.ts
-│   │       ├── get-user-by-id.usecase.ts
-│   │       ├── get-all-products.usecase.ts
-│   │       └── get-product-by-id.usecase.ts
-│   │
-│   └── infrastructure
-│       ├── services
-│       │   ├── user-api.service.ts
-│       │   └── product-api.service.ts
-│       └── repositories
-│           ├── user.repository.impl.ts
-│           └── product.repository.impl.ts
-│
-├── presentation
-│   ├── users
-│   └── products
-│
-└── app.config.ts
-```
+Frontend Angular standalone con tres módulos: usuarios, productos y música.
+La presentación depende de casos de uso; los casos de uso dependen de
+contratos del dominio, y la infraestructura implementa esos contratos.
 
+## Estructura
 
-## Paso 1 - Crear Modelos
-
-```
-src/app/core/domain/models/
-├── user.model.ts
-└── product.model.ts
-```
-
-## Paso 2 - Crear Repositorios
-
-```
-src/app/core/domain/repositories/
-├── user.repository.ts
-└── product.repository.ts
-```
-
-## Paso 3 - Crear Casos de Uso
-
-### User
-```
-src/app/core/application/usecases/user/
-├── get-all-users.usecase.ts
-└── get-user-by-id.usecase.ts
-```
-
-### Product
-```
-src/app/core/application/usecases/product/
-├── get-all-products.usecase.ts
-└── get-product-by-id.usecase.ts
-```
-
-## Paso 4 - Crear Servicios
-
-
-```
-src/app/core/infrastructure/services/
-├── user.service.ts
-└── product.service.ts
-```
-
-## Paso 5 - Crear Repositorios Implementadores
-
-### Implementación para Consumo de Datos Local
-```
-src/app/core/infrastructure/repositories/local
-├── user-local.repository.impl.ts
-└── product-local.repository.impl.ts
-```
-
-### Implementación para Consumo de Datos NodeJS
-```
-src/app/core/infrastructure/repositories/node
-├── user-node.repository.impl.ts
-└── product-node.repository.impl.ts
-```
-
-## Paso 6 - Agregar Providers con sus Implementadores
-
-```
+```text
 src/app/
-└── app.config.ts
+├── core/
+│   ├── domain/                 # Modelos y contratos de repositorios
+│   ├── application/usecases/   # Casos de uso
+│   └── infrastructure/        # Servicios HTTP y repositorios
+├── presentation/
+│   ├── components/
+│   └── pages/
+├── app.config.ts              # Providers
+└── app.routes.ts              # Rutas
 ```
 
-# Funcionamiento del Frontend
+## Requisitos y ejecución
 
-## Ejecutar Frontend
-```
+Requiere Node.js y npm compatibles con Angular 20.
+
+```bash
+npm ci
 npm run start
 ```
 
-## Urls Consumo
+Abre `http://localhost:4200`. La fuente local de música permite probar el
+módulo sin ejecutar un backend.
 
-### Frontend
-```
-http://localhost:4200
+## Módulos y APIs
+
+| Módulo | Ruta frontend | Operación backend |
+| --- | --- | --- |
+| Usuarios | `/users` | `GET /api/users/{count}` |
+| Productos | `/products` | `GET /api/products/{count}` |
+| Música | `/music` | `GET /api/music/{count}` |
+
+La fuente de datos de música se selecciona en
+`src/environments/environment.ts` mediante `musicDataSource`:
+
+```ts
+musicDataSource: 'local', // 'node' o 'springboot'
 ```
 
-### Backend NodeJS
-```
-http://localhost:3000/api/docs
-http://localhost:3000/api/users/{countUsers}
-http://localhost:3000/api/products/{countProducts}
+Los adaptadores HTTP esperan que ambos backends implementen
+`GET /api/music/{count}` y respondan con una lista cuyos elementos tengan
+`id`, `title`, `artist`, `album`, `genre` y `releaseYear`. Las URLs base están
+configuradas en el mismo archivo: Node.js usa `http://localhost:3000` y
+Spring Boot usa `http://localhost:8080`.
+
+Documentación de API disponible al iniciar los backends:
+
+- Node.js: `http://localhost:3000/api/docs`
+- Spring Boot: `http://localhost:8080/api/swagger-ui/index.html`
+
+Este repositorio contiene solo el frontend; no incluye los proyectos de
+backend. Por ello, la documentación técnica detallada y los documentos
+Swagger/OpenAPI de los backends deben mantenerse en sus respectivos
+repositorios. El endpoint y el contrato nuevos de música quedan especificados
+arriba para que ambos backends puedan implementarlos.
+
+`MusicPage` usa `GetAllMusicUseCase`; los adaptadores local, Node.js y Spring
+Boot son intercambiables mediante el provider de `MusicRepository`. No se
+consumen servicios HTTP directamente desde los componentes.
+
+## Pruebas y documentación Angular
+
+```bash
+npm test -- --runInBand
+npm run test:coverage -- --runInBand
+npm run compodoc
 ```
 
-### Backend SpringBoot
-```
-http://localhost:3000/api/swagger-ui/index.html
-http://localhost:3000/api/users/{countUsers}
-http://localhost:3000/api/products/{countProducts}
+Las pruebas unitarias verifican casos de uso, proveedores, repositorios,
+servicios y componentes. Compodoc genera la documentación Angular en
+`documentation/`.
+
+## Estándar de commits
+
+Usa Conventional Commits con mensajes breves en imperativo, por ejemplo:
+
+```text
+feat(music): add music catalogue module
+test(music): cover repository providers
+docs(readme): document music API contract
 ```

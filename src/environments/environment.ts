@@ -33,4 +33,9 @@ export const environment = {
    *
    */
   baseUrlSpringBoot: 'http://localhost:8080',
+  /**
+   * Fuente de datos del módulo de música.
+   * Cambiar a `node` o `springboot` cuando el backend correspondiente esté disponible.
+   */
+  musicDataSource: 'local' as 'local' | 'node' | 'springboot',
 };

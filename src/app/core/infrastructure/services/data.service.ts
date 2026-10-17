@@ -3,6 +3,7 @@ import { inject, Injectable } from "@angular/core";
 import { faker } from '@faker-js/faker';
 import { Observable, of } from "rxjs";
 import { environment } from "../../../../environments/environment";
+import { Music, MusicGenre } from "../../domain/models/music.model";
 import { Product, ProductCategory } from "../../domain/models/product.model";
 import { User, UserEngineering } from "../../domain/models/user.model";
 
@@ -110,6 +111,27 @@ export class DataService {
     }
 
     /**
+     * Obtiene canciones de demostración generadas localmente.
+     */
+    getAllMusicLocal(count: number): Observable<Music[]> {
+        const genres: MusicGenre[] = ['Pop', 'Rock', 'Jazz', 'Hip-hop', 'Clásica'];
+        const music: Music[] = [];
+
+        for (let id = 1; id <= count; id++) {
+            music.push({
+                id,
+                title: faker.commerce.productName(),
+                artist: `${faker.person.firstName()} ${faker.person.lastName()}`,
+                album: faker.commerce.productName(),
+                genre: faker.helpers.arrayElement(genres),
+                releaseYear: faker.number.int({ min: 1960, max: 2025 }),
+            });
+        }
+
+        return of(music);
+    }
+
+    /**
      * Obtiene el listado de usuarios desde el backend Node.js.
      *
      * @remarks
@@ -155,6 +177,13 @@ export class DataService {
     }
 
     /**
+     * Consulta canciones en Node.js mediante GET /api/music/{count}.
+     */
+    getAllMusicNode(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.nodeUrl}/music/${count}`);
+    }
+
+    /**
      * Obtiene el listado de usuarios desde el backend SpringBoot.
      *
      * @remarks
@@ -197,6 +226,13 @@ export class DataService {
      */
     getAllProductsSpringBoot(countProducts: number): Observable<Product[]> {
         return this.httpClient.get<Product[]>(`${this.springBootUrl}/products/${countProducts}`);
+    }
+
+    /**
+     * Consulta canciones en Spring Boot mediante GET /api/music/{count}.
+     */
+    getAllMusicSpringBoot(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.springBootUrl}/music/${count}`);
     }
 
 }

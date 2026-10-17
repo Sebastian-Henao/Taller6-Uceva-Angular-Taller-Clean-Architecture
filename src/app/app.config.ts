@@ -1,5 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { ProductRepository } from './core/domain/repositories/product.repository';
@@ -10,6 +15,11 @@ import { UserSpringBootRepositoryImpl } from './core/infrastructure/repositories
 import { ProductSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/product-springboot.repository.impl';
 import { UserLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/user-local.repository.impl';
 import { ProductLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/product-local.repository.impl';
+import { MusicRepository } from './core/domain/repositories/music.repository';
+import { MusicLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/music-local.repository.impl';
+import { MusicNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/music-node.repository.impl';
+import { MusicSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/music-springboot.repository.impl';
+import { environment } from '../environments/environment';
 
 /**
  * Configuración principal de la aplicación Angular.
@@ -41,6 +51,25 @@ export const appConfig: ApplicationConfig = {
     //Local Providers
     { provide: UserRepository, useClass: UserLocalRepositoryImpl },
     { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
+
+    MusicLocalRepositoryImpl,
+    MusicNodeRepositoryImpl,
+    MusicSpringBootRepositoryImpl,
+    {
+      provide: MusicRepository,
+      useFactory: () => {
+        switch (environment.musicDataSource) {
+          case 'local':
+            return inject(MusicLocalRepositoryImpl);
+          case 'node':
+            return inject(MusicNodeRepositoryImpl);
+          case 'springboot':
+            return inject(MusicSpringBootRepositoryImpl);
+          default:
+            throw new Error(`Fuente de datos de música no soportada: ${environment.musicDataSource}`);
+        }
+      },
+    },
     
     //Node Providers
     //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },

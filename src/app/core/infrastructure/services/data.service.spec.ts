@@ -7,6 +7,8 @@ import { User } from '../../domain/models/user.model';
 import { DataService } from './data.service';
 import { USERS_MOCK } from '../../../mocks/users.mocks';
 import { PRODUCTS_MOCK } from '../../../mocks/products.mocks';
+import { MUSIC_MOCK } from '../../../mocks/music.mocks';
+import { Music } from '../../domain/models/music.model';
 
 jest.mock('@faker-js/faker', () => ({
   faker: {
@@ -36,6 +38,7 @@ describe('DataService', () => {
   
   const countUsers = 5;
   const countProducts = 5;
+  const countMusic = 5;
   const pathUrlNode = `${environment.baseUrlNode}/api`;
   const pathUrlSpringBoot = `${environment.baseUrlSpringBoot}/api`;
 
@@ -73,6 +76,21 @@ describe('DataService', () => {
     });
   });
 
+  it('debe devolver el listado de música local', (done) => {
+    service.getAllMusicLocal(countMusic).subscribe((music: Music[]) => {
+      expect(music).toHaveLength(countMusic);
+      expect(music[0]).toEqual({
+        id: 1,
+        title: 'Producto Test',
+        artist: 'Juan Pérez',
+        album: 'Producto Test',
+        genre: expect.any(String),
+        releaseYear: 30,
+      });
+      done();
+    });
+  });
+
   it('debe obtener usuarios desde Node por HTTP', () => {
     service.getAllUsersNode(countUsers).subscribe((users) => {
       expect(users).toEqual(USERS_MOCK);
@@ -91,6 +109,15 @@ describe('DataService', () => {
     req.flush(PRODUCTS_MOCK);
   });
 
+  it('debe obtener música desde Node por HTTP', () => {
+    service.getAllMusicNode(countMusic).subscribe((music) => {
+      expect(music).toEqual(MUSIC_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlNode}/music/${countMusic}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(MUSIC_MOCK);
+  });
+
   it('debe obtener usuarios desde SpringBoot por HTTP', () => {
     service.getAllUsersSpringBoot(countUsers).subscribe((users) => {
       expect(users).toEqual(USERS_MOCK);
@@ -107,6 +134,15 @@ describe('DataService', () => {
     const req = httpMock.expectOne(`${pathUrlSpringBoot}/products/${countProducts}`);
     expect(req.request.method).toBe('GET');
     req.flush(PRODUCTS_MOCK);
+  });
+
+  it('debe obtener música desde SpringBoot por HTTP', () => {
+    service.getAllMusicSpringBoot(countMusic).subscribe((music) => {
+      expect(music).toEqual(MUSIC_MOCK);
+    });
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/music/${countMusic}`);
+    expect(req.request.method).toBe('GET');
+    req.flush(MUSIC_MOCK);
   });
 
 });
