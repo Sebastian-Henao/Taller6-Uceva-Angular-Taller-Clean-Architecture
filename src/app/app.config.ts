@@ -45,10 +45,6 @@ export const appConfig: ApplicationConfig = {
     //Local Providers
     { provide: UserRepository, useClass: UserLocalRepositoryImpl },
     { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
-    /**
-     * Selecciona la fuente local de personajes para la aplicación.
-     * Puede sustituirse por la implementación Node.js o Spring Boot.
-     */
     { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
     
     //Node Providers
