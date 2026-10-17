@@ -14,6 +14,8 @@
  * this.http.get(`${environment.baseUrl}/users`);
  * ```
  */
+export type DataSource = 'local' | 'node' | 'springboot';
+
 export const environment = {
   /**
    * URL base del backend en NodeJS de la aplicación.
@@ -33,4 +35,11 @@ export const environment = {
    *
    */
   baseUrlSpringBoot: 'http://localhost:8080',
+  /**
+   * Fuente de datos seleccionada para cada módulo.
+   * `local` genera datos de demostración; las otras opciones requieren el backend.
+   */
+  userDataSource: 'local' as DataSource,
+  productDataSource: 'local' as DataSource,
+  musicDataSource: 'local' as DataSource,
 };

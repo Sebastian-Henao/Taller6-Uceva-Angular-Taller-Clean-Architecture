@@ -6,6 +6,7 @@ import { environment } from "../../../../environments/environment";
 import { Product, ProductCategory } from "../../domain/models/product.model";
 import { User, UserEngineering } from "../../domain/models/user.model";
 import { Personaje, RolCategoria } from "../../domain/models/personaje.model";
+import { Music, MusicGenre } from "../../domain/models/music.model";
 
 /**
  * Servicio de infraestructura para obtención de datos.
@@ -16,13 +17,13 @@ import { Personaje, RolCategoria } from "../../domain/models/personaje.model";
  * diferentes orígenes:
  *
  * - Datos locales simulados (mocks)
- * - Backend Node.js mediante HTTP
+ * - Backends Node.js y Spring Boot mediante HTTP
  *
  * ❗ No contiene lógica de negocio.
  * ❗ No debe ser consumido directamente por los casos de uso.
  *
- * Es utilizado por repositorios o servicios de infraestructura
- * que adaptan los datos al dominio.
+ * Es utilizado por repositorios de infraestructura, que adaptan las fuentes
+ * al contrato del dominio.
  */
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -143,6 +144,27 @@ export class DataService {
     }
 
     /**
+     * Genera un listado de canciones de ejemplo con datos locales.
+     */
+    getAllMusicLocal(count: number): Observable<Music[]> {
+        const genres: MusicGenre[] = ['Pop', 'Rock', 'Jazz', 'Hip-hop', 'Clásica'];
+        const music: Music[] = [];
+
+        for (let id = 1; id <= count; id++) {
+            music.push({
+                id,
+                title: faker.commerce.productName(),
+                artist: `${faker.person.firstName()} ${faker.person.lastName()}`,
+                album: faker.commerce.productName(),
+                genre: faker.helpers.arrayElement(genres),
+                releaseYear: faker.number.int({ min: 1960, max: 2025 }),
+            });
+        }
+
+        return of(music);
+    }
+
+    /**
      * Obtiene el listado de usuarios desde el backend Node.js.
      *
      * @remarks
@@ -200,6 +222,14 @@ export class DataService {
     getAllPersonajesNode(countPersonajes: number): Observable<Personaje[]> {
         return this.httpClient.get<Personaje[]>(`${this.nodeUrl}/personajes/${countPersonajes}`);
     }
+
+    /**
+     * Obtiene canciones desde el backend Node.js.
+     */
+    getAllMusicNode(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.nodeUrl}/music/${count}`);
+    }
+
     /**
      * Obtiene el listado de usuarios desde el backend SpringBoot.
      *
@@ -257,6 +287,13 @@ export class DataService {
      */
     getAllPersonajesSpringBoot(countPersonajes: number): Observable<Personaje[]> {
         return this.httpClient.get<Personaje[]>(`${this.springBootUrl}/personajes/${countPersonajes}`);
+    }
+
+    /**
+     * Obtiene canciones desde el backend Spring Boot.
+     */
+    getAllMusicSpringBoot(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.springBootUrl}/music/${count}`);
     }
 
 }

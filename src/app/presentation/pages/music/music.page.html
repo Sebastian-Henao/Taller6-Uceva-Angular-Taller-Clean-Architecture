@@ -1,0 +1,17 @@
+<main class="container">
+  <header class="mb-4">
+    <h1 class="h2">Catálogo de música</h1>
+    <p class="text-muted mb-0">Canciones, artistas, álbumes y géneros.</p>
+  </header>
+  @switch (state) {
+    @case ('loading') {
+      <app-alert alertState="loading" text="Cargando canciones..."></app-alert>
+    }
+    @case ('error') {
+      <app-alert alertState="error" text="Error al cargar las canciones"></app-alert>
+    }
+    @case ('success') {
+      <app-music-table [music]="music"></app-music-table>
+    }
+  }
+</main>

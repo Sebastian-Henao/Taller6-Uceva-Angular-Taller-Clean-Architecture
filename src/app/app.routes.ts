@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { UsersPage } from './presentation/pages/users/users.page';
 import { ProductsPage } from './presentation/pages/products/products.page';
+import { MusicPage } from './presentation/pages/music/music.page';
 import { PersonajesPage } from './presentation/pages/personajes/personajes.page';
 
 /**
@@ -37,14 +38,9 @@ export const routes: Routes = [
    * de mostrar y gestionar el listado de productos.
    */
   { path: 'products', component: ProductsPage },
-
-  /**
-   * Ruta de personajes.
-   *
-   * Renderiza {@link PersonajesPage}, encargada de cargar y mostrar
-   * el listado de personajes.
-   */
+  { path: 'music', component: MusicPage },
   { path: 'personajes', component: PersonajesPage },
+
   /**
    * Ruta comodín.
    *
