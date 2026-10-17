@@ -9,12 +9,16 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { ProductRepository } from './core/domain/repositories/product.repository';
 import { UserRepository } from './core/domain/repositories/user.repository';
+import { JunglerRepository } from './core/domain/repositories/jungler.repository';
 import { ProductNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/product-node.repository.impl';
 import { UserNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/user-node.repository.impl';
+import { JunglerNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/jungler-node.repository.impl';
 import { UserSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/user-springboot.repository.impl';
 import { ProductSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/product-springboot.repository.impl';
+import { JunglerSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/jungler-springboot.repository.impl';
 import { UserLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/user-local.repository.impl';
 import { ProductLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/product-local.repository.impl';
+import { JunglerLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/jungler-local.repository.impl';
 import { MusicRepository } from './core/domain/repositories/music.repository';
 import { MusicLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/music-local.repository.impl';
 import { MusicNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/music-node.repository.impl';
@@ -83,6 +87,26 @@ export const appConfig: ApplicationConfig = {
             return inject(ProductSpringBootRepositoryImpl);
           default:
             throw new Error(`Fuente de datos de productos no soportada: ${environment.productDataSource}`);
+        }
+      },
+    },
+    JunglerLocalRepositoryImpl,
+    JunglerNodeRepositoryImpl,
+    JunglerSpringBootRepositoryImpl,
+    {
+      provide: JunglerRepository,
+      useFactory: () => {
+        switch (environment.junglerDataSource) {
+          case 'local':
+            return inject(JunglerLocalRepositoryImpl);
+          case 'node':
+            return inject(JunglerNodeRepositoryImpl);
+          case 'springboot':
+            return inject(JunglerSpringBootRepositoryImpl);
+          default:
+            throw new Error(
+              `Fuente de datos de junglers no soportada: ${environment.junglerDataSource}`,
+            );
         }
       },
     },

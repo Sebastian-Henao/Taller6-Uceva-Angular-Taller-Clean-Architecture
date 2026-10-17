@@ -7,7 +7,8 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "compodoc": "npx compodoc -p tsconfig.doc.json"
+    "compodoc": "npx compodoc -p tsconfig.doc.json",
+    "docs": "npx compodoc -p tsconfig.doc.json"
   },
   "prettier": {
     "printWidth": 100,
