@@ -1,5 +1,10 @@
 import { Personaje } from "../core/domain/models/personaje.model";
 
+/**
+ * Datos de ejemplo de personajes para pruebas y demostraciones locales.
+ *
+ * Cada elemento cumple el modelo de dominio {@link Personaje}.
+ */
 export const PERSONAJES_MOCK: Personaje[] = [
     {
         id: 1,

@@ -38,6 +38,12 @@ export const routes: Routes = [
    */
   { path: 'products', component: ProductsPage },
 
+  /**
+   * Ruta de personajes.
+   *
+   * Renderiza {@link PersonajesPage}, encargada de cargar y mostrar
+   * el listado de personajes.
+   */
   { path: 'personajes', component: PersonajesPage },
   /**
    * Ruta comodín.

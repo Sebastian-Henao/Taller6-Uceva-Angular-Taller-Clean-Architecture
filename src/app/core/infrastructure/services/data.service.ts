@@ -110,6 +110,16 @@ export class DataService {
         return of(products);
     }
 
+    /**
+     * Genera un listado de personajes de ejemplo con datos locales.
+     *
+     * @param countPersonajes - Cantidad de personajes a generar.
+     * @returns Observable que emite personajes con roles válidos.
+     *
+     * @remarks
+     * Los valores se generan con Faker y se devuelven sin realizar
+     * solicitudes HTTP.
+     */
     getAllPersonajesLocal(countPersonajes: number): Observable<Personaje[]> {
         const personajes: Personaje[] = [];
         const rolCategory: RolCategoria[] = [
@@ -177,7 +187,16 @@ export class DataService {
         return this.httpClient.get<Product[]>(`${this.nodeUrl}/products/${countProducts}`);
     }
 
-
+    /**
+     * Obtiene personajes desde el backend Node.js.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Node.js.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
     getAllPersonajesNode(countPersonajes: number): Observable<Personaje[]> {
         return this.httpClient.get<Personaje[]>(`${this.nodeUrl}/personajes/${countPersonajes}`);
     }
@@ -226,6 +245,16 @@ export class DataService {
         return this.httpClient.get<Product[]>(`${this.springBootUrl}/products/${countProducts}`);
     }
 
+    /**
+     * Obtiene personajes desde el backend Spring Boot.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Spring Boot.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
     getAllPersonajesSpringBoot(countPersonajes: number): Observable<Personaje[]> {
         return this.httpClient.get<Personaje[]>(`${this.springBootUrl}/personajes/${countPersonajes}`);
     }
