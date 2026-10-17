@@ -1,16 +1,17 @@
 /**
- * Géneros musicales admitidos por el catálogo de demostración.
- */
-export type MusicGenre = 'Pop' | 'Rock' | 'Jazz' | 'Hip-hop' | 'Clásica';
-
-/**
  * Canción mostrada en el catálogo de música.
  */
 export interface Music {
+  /** Identificador único de la canción. */
   id: number;
+  /** Título de la canción. */
   title: string;
-  artist: string;
-  album: string;
-  genre: MusicGenre;
-  releaseYear: number;
+  /** Duración de la canción en segundos. */
+  durationSeconds: number;
+  /** Género musical de la canción. */
+  genre: string;
+  /** Identificador de quien interpreta la canción. */
+  artistId: number;
+  /** Identificador del álbum al que pertenece la canción. */
+  albumId: number;
 }

@@ -14,8 +14,15 @@ import { Jungler } from "../../../domain/models/jungler.model";
 @Injectable()
 export class JunglerLocalRepositoryImpl extends JunglerRepository {
 
+  /** Servicio que proporciona los datos locales de junglers. */
   private dataService = inject(DataService);
 
+  /**
+   * Obtiene junglers de demostración desde el servicio de datos.
+   *
+   * @param countJunglers Cantidad de junglers solicitados.
+   * @returns Flujo observable con los junglers locales.
+   */
   getAll(countJunglers: number): Observable<Jungler[]> {
     return this.dataService.getAllJunglersLocal(countJunglers);
   }

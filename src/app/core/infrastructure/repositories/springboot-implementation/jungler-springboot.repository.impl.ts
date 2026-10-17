@@ -15,8 +15,15 @@ import { Jungler } from "../../../domain/models/jungler.model";
 @Injectable()
 export class JunglerSpringBootRepositoryImpl extends JunglerRepository {
 
+  /** Servicio que realiza las solicitudes HTTP a Spring Boot. */
   private dataService = inject(DataService);
 
+  /**
+   * Obtiene junglers desde la API Spring Boot.
+   *
+   * @param countJunglers Cantidad de junglers solicitados.
+   * @returns Flujo observable con los junglers recibidos.
+   */
   getAll(countJunglers: number): Observable<Jungler[]> {
     return this.dataService.getAllJunglersSpringBoot(countJunglers);
   }

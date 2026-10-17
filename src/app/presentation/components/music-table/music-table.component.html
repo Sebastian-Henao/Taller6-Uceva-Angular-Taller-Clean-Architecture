@@ -5,10 +5,10 @@
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Canción</th>
-        <th scope="col">Artista</th>
-        <th scope="col">Álbum</th>
+        <th scope="col">Duración (segundos)</th>
         <th scope="col">Género</th>
-        <th scope="col">Año</th>
+        <th scope="col">ID artista</th>
+        <th scope="col">ID álbum</th>
       </tr>
     </thead>
     <tbody>
@@ -16,10 +16,10 @@
         <tr>
           <th scope="row">{{ song.id }}</th>
           <td>{{ song.title }}</td>
-          <td>{{ song.artist }}</td>
-          <td>{{ song.album }}</td>
+          <td>{{ song.durationSeconds }}</td>
           <td><span class="badge text-bg-primary">{{ song.genre }}</span></td>
-          <td>{{ song.releaseYear }}</td>
+          <td>{{ song.artistId }}</td>
+          <td>{{ song.albumId }}</td>
         </tr>
       } @empty {
         <tr>

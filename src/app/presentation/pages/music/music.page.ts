@@ -15,11 +15,18 @@ import { State } from '../../interfaces/state.interface';
   providers: [GetAllMusicUseCase],
 })
 export class MusicPage implements OnInit {
+  /** Canciones cargadas para mostrar en la tabla. */
   music: Music[] = [];
+
+  /** Estado actual de la carga del catálogo. */
   state: State = 'init';
 
+  /** Caso de uso que obtiene las canciones del catálogo. */
   private readonly getAllMusic = inject(GetAllMusicUseCase);
 
+  /**
+   * Inicia la carga del catálogo y actualiza la vista según el resultado.
+   */
   ngOnInit(): void {
     this.state = 'loading';
     this.getAllMusic.execute(10).subscribe({

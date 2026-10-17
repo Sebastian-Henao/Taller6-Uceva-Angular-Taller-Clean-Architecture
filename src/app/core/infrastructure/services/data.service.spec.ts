@@ -111,10 +111,10 @@ describe('DataService', () => {
       expect(music[0]).toEqual({
         id: 1,
         title: 'Producto Test',
-        artist: 'Juan Pérez',
-        album: 'Producto Test',
+        durationSeconds: 30,
         genre: expect.any(String),
-        releaseYear: 30,
+        artistId: 1,
+        albumId: 1,
       });
       done();
     });
@@ -213,7 +213,7 @@ describe('DataService', () => {
     service.getAllMusicSpringBoot(countMusic).subscribe((music) => {
       expect(music).toEqual(MUSIC_MOCK);
     });
-    const req = httpMock.expectOne(`${pathUrlSpringBoot}/music/${countMusic}`);
+    const req = httpMock.expectOne(`${pathUrlSpringBoot}/songs`);
     expect(req.request.method).toBe('GET');
     req.flush(MUSIC_MOCK);
   });

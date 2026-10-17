@@ -15,8 +15,15 @@ import { Jungler } from "../../../domain/models/jungler.model";
 @Injectable()
 export class JunglerNodeRepositoryImpl extends JunglerRepository {
 
+  /** Servicio que realiza las solicitudes HTTP al backend Node.js. */
   private dataService = inject(DataService);
 
+  /**
+   * Obtiene junglers desde la API Node.js.
+   *
+   * @param countJunglers Cantidad de junglers solicitados.
+   * @returns Flujo observable con los junglers recibidos.
+   */
   getAll(countJunglers: number): Observable<Jungler[]> {
     return this.dataService.getAllJunglersNode(countJunglers);
   }
