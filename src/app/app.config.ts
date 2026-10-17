@@ -1,5 +1,10 @@
 import { provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  provideBrowserGlobalErrorListeners,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { ProductRepository } from './core/domain/repositories/product.repository';
@@ -14,6 +19,13 @@ import { JunglerSpringBootRepositoryImpl } from './core/infrastructure/repositor
 import { UserLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/user-local.repository.impl';
 import { ProductLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/product-local.repository.impl';
 import { JunglerLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/jungler-local.repository.impl';
+import { MusicRepository } from './core/domain/repositories/music.repository';
+import { MusicLocalRepositoryImpl } from './core/infrastructure/repositories/local-implementation/music-local.repository.impl';
+import { MusicNodeRepositoryImpl } from './core/infrastructure/repositories/node-implementation/music-node.repository.impl';
+import { MusicSpringBootRepositoryImpl } from './core/infrastructure/repositories/springboot-implementation/music-springboot.repository.impl';
+import { environment } from '../environments/environment';
+import { PersonajeRepository } from './core/domain/repositories/personaje.repository';
+import { PersonajesLocalRepositorieImpl } from './core/infrastructure/repositories/local-implementation/personajes-local.repositorie.impl';
 
 /**
  * Configuración principal de la aplicación Angular.
@@ -42,20 +54,83 @@ export const appConfig: ApplicationConfig = {
    */
   providers: [
 
-    //Local Providers
-    { provide: UserRepository, useClass: UserLocalRepositoryImpl },
-    { provide: ProductRepository, useClass: ProductLocalRepositoryImpl },
-    { provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
-    
-    //Node Providers
-    //{ provide: UserRepository, useClass: UserNodeRepositoryImpl },
-    //{ provide: ProductRepository, useClass: ProductNodeRepositoryImpl },
-    //{ provide: JunglerRepository, useClass: JunglerNodeRepositoryImpl },
-
-    //SpringBoot Providers
-    //{ provide: UserRepository, useClass: UserSpringBootRepositoryImpl },
-    //{ provide: ProductRepository, useClass: ProductSpringBootRepositoryImpl },
-    //{ provide: JunglerRepository, useClass: JunglerSpringBootRepositoryImpl },
+    UserLocalRepositoryImpl,
+    UserNodeRepositoryImpl,
+    UserSpringBootRepositoryImpl,
+    {
+      provide: UserRepository,
+      useFactory: () => {
+        switch (environment.userDataSource) {
+          case 'local':
+            return inject(UserLocalRepositoryImpl);
+          case 'node':
+            return inject(UserNodeRepositoryImpl);
+          case 'springboot':
+            return inject(UserSpringBootRepositoryImpl);
+          default:
+            throw new Error(`Fuente de datos de usuarios no soportada: ${environment.userDataSource}`);
+        }
+      },
+    },
+    ProductLocalRepositoryImpl,
+    ProductNodeRepositoryImpl,
+    ProductSpringBootRepositoryImpl,
+    {
+      provide: ProductRepository,
+      useFactory: () => {
+        switch (environment.productDataSource) {
+          case 'local':
+            return inject(ProductLocalRepositoryImpl);
+          case 'node':
+            return inject(ProductNodeRepositoryImpl);
+          case 'springboot':
+            return inject(ProductSpringBootRepositoryImpl);
+          default:
+            throw new Error(`Fuente de datos de productos no soportada: ${environment.productDataSource}`);
+        }
+      },
+    },
+    JunglerLocalRepositoryImpl,
+    JunglerNodeRepositoryImpl,
+    JunglerSpringBootRepositoryImpl,
+    {
+      provide: JunglerRepository,
+      useFactory: () => {
+        switch (environment.junglerDataSource) {
+          case 'local':
+            return inject(JunglerLocalRepositoryImpl);
+          case 'node':
+            return inject(JunglerNodeRepositoryImpl);
+          case 'springboot':
+            return inject(JunglerSpringBootRepositoryImpl);
+          default:
+            throw new Error(
+              `Fuente de datos de junglers no soportada: ${environment.junglerDataSource}`,
+            );
+        }
+      },
+    },
+    MusicLocalRepositoryImpl,
+    MusicNodeRepositoryImpl,
+    MusicSpringBootRepositoryImpl,
+    {
+      provide: MusicRepository,
+      useFactory: () => {
+        switch (environment.musicDataSource) {
+          case 'local':
+            return inject(MusicLocalRepositoryImpl);
+          case 'node':
+            return inject(MusicNodeRepositoryImpl);
+          case 'springboot':
+            return inject(MusicSpringBootRepositoryImpl);
+          default:
+            throw new Error(
+              `Fuente de datos de música no soportada: ${environment.musicDataSource}`,
+            );
+        }
+      },
+    },
+    { provide: PersonajeRepository, useClass: PersonajesLocalRepositorieImpl },
 
     /**
      * Proveedor de listeners globales de errores del navegador.
@@ -88,5 +163,5 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
 
     provideHttpClient(),
-  ]
+  ],
 };

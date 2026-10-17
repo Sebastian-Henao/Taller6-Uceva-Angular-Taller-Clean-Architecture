@@ -7,6 +7,8 @@ import { Product, ProductCategory } from "../../domain/models/product.model";
 import { User, UserEngineering } from "../../domain/models/user.model";
 import { Jungler } from "../../domain/models/jungler.model";
 import { ALL_20_JUNGLERS } from "../../../mocks/junglers.mocks";
+import { Personaje, RolCategoria } from "../../domain/models/personaje.model";
+import { Music, MusicGenre } from "../../domain/models/music.model";
 
 /**
  * Servicio de infraestructura para obtención de datos.
@@ -17,13 +19,13 @@ import { ALL_20_JUNGLERS } from "../../../mocks/junglers.mocks";
  * diferentes orígenes:
  *
  * - Datos locales simulados (mocks)
- * - Backend Node.js mediante HTTP
+ * - Backends Node.js y Spring Boot mediante HTTP
  *
  * ❗ No contiene lógica de negocio.
  * ❗ No debe ser consumido directamente por los casos de uso.
  *
- * Es utilizado por repositorios o servicios de infraestructura
- * que adaptan los datos al dominio.
+ * Es utilizado por repositorios de infraestructura, que adaptan las fuentes
+ * al contrato del dominio.
  */
 @Injectable({ providedIn: 'root' })
 export class DataService {
@@ -112,6 +114,59 @@ export class DataService {
     }
 
     /**
+     * Genera un listado de personajes de ejemplo con datos locales.
+     *
+     * @param countPersonajes - Cantidad de personajes a generar.
+     * @returns Observable que emite personajes con roles válidos.
+     *
+     * @remarks
+     * Los valores se generan con Faker y se devuelven sin realizar
+     * solicitudes HTTP.
+     */
+    getAllPersonajesLocal(countPersonajes: number): Observable<Personaje[]> {
+        const personajes: Personaje[] = [];
+        const rolCategory: RolCategoria[] = [
+            'Vanguardia',
+            'Ladron',
+            'Jefe',
+            'Ilusionista',
+            'Explorador'
+        ];
+        for(let i = 1; i <= countPersonajes; i++) {
+            personajes.push({
+                id: i,
+                nombre: faker.person.fullName(),
+                alias: faker.word.noun(),
+                juego: faker.company.name(),
+                habilidad: faker.commerce.productName(),
+                rol: faker.helpers.arrayElement(rolCategory),
+            })
+        }
+        return of(personajes);
+    }
+
+    /**
+     * Genera un listado de canciones de ejemplo con datos locales.
+     */
+    getAllMusicLocal(count: number): Observable<Music[]> {
+        const genres: MusicGenre[] = ['Pop', 'Rock', 'Jazz', 'Hip-hop', 'Clásica'];
+        const music: Music[] = [];
+
+        for (let id = 1; id <= count; id++) {
+            music.push({
+                id,
+                title: faker.commerce.productName(),
+                artist: `${faker.person.firstName()} ${faker.person.lastName()}`,
+                album: faker.commerce.productName(),
+                genre: faker.helpers.arrayElement(genres),
+                releaseYear: faker.number.int({ min: 1960, max: 2025 }),
+            });
+        }
+
+        return of(music);
+    }
+
+    /**
      * Obtiene el listado de usuarios desde el backend Node.js.
      *
      * @remarks
@@ -154,6 +209,27 @@ export class DataService {
      */
     getAllProductsNode(countProducts: number): Observable<Product[]> {
         return this.httpClient.get<Product[]>(`${this.nodeUrl}/products/${countProducts}`);
+    }
+
+    /**
+     * Obtiene personajes desde el backend Node.js.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Node.js.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
+    getAllPersonajesNode(countPersonajes: number): Observable<Personaje[]> {
+        return this.httpClient.get<Personaje[]>(`${this.nodeUrl}/personajes/${countPersonajes}`);
+    }
+
+    /**
+     * Obtiene canciones desde el backend Node.js.
+     */
+    getAllMusicNode(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.nodeUrl}/music/${count}`);
     }
 
     /**
@@ -230,6 +306,27 @@ export class DataService {
      */
     getAllJunglersSpringBoot(countJunglers: number): Observable<Jungler[]> {
         return this.httpClient.get<Jungler[]>(`${this.springBootUrl}/junglers/${countJunglers}`);
+    }
+
+    /**
+     * Obtiene personajes desde el backend Spring Boot.
+     *
+     * @remarks
+     * Realiza una petición HTTP GET a
+     * `/api/personajes/{countPersonajes}` en el servidor Spring Boot.
+     *
+     * @param countPersonajes - Cantidad de personajes solicitada.
+     * @returns Observable que emite los personajes recibidos.
+     */
+    getAllPersonajesSpringBoot(countPersonajes: number): Observable<Personaje[]> {
+        return this.httpClient.get<Personaje[]>(`${this.springBootUrl}/personajes/${countPersonajes}`);
+    }
+
+    /**
+     * Obtiene canciones desde el backend Spring Boot.
+     */
+    getAllMusicSpringBoot(count: number): Observable<Music[]> {
+        return this.httpClient.get<Music[]>(`${this.springBootUrl}/music/${count}`);
     }
 
 }

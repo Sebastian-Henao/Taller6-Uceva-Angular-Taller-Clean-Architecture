@@ -1,138 +1,84 @@
-# Clean Architecture en Angular
+# Arquitectura limpia con Angular
 
-```
-src/app
-│
-├── core
-│   ├── domain
-│   │   ├── models
-│   │   │   ├── user.model.ts
-│   │   │   └── product.model.ts
-│   │   └── repositories
-│   │       ├── user.repository.ts
-│   │       └── product.repository.ts
-│   │
-│   ├── application
-│   │   └── use-cases
-│   │       ├── get-all-users.usecase.ts
-│   │       ├── get-user-by-id.usecase.ts
-│   │       ├── get-all-products.usecase.ts
-│   │       └── get-product-by-id.usecase.ts
-│   │
-│   └── infrastructure
-│       ├── services
-│       │   ├── user-api.service.ts
-│       │   └── product-api.service.ts
-│       └── repositories
-│           ├── user.repository.impl.ts
-│           └── product.repository.impl.ts
-│
-├── presentation
-│   ├── users
-│   └── products
-│
-└── app.config.ts
-```
+Aplicación frontend con Angular standalone y cinco módulos: usuarios,
+productos, música, personajes y junglers. La capa de presentación depende de
+casos de uso; estos dependen de contratos del dominio, implementados por la
+capa de infraestructura.
 
+## Estructura
 
-## Paso 1 - Crear Modelos
-
-```
-src/app/core/domain/models/
-├── user.model.ts
-└── product.model.ts
-```
-
-## Paso 2 - Crear Repositorios
-
-```
-src/app/core/domain/repositories/
-├── user.repository.ts
-└── product.repository.ts
-```
-
-## Paso 3 - Crear Casos de Uso
-
-### User
-```
-src/app/core/application/usecases/user/
-├── get-all-users.usecase.ts
-└── get-user-by-id.usecase.ts
-```
-
-### Product
-```
-src/app/core/application/usecases/product/
-├── get-all-products.usecase.ts
-└── get-product-by-id.usecase.ts
-```
-
-## Paso 4 - Crear Servicios
-
-
-```
-src/app/core/infrastructure/services/
-├── user.service.ts
-└── product.service.ts
-```
-
-## Paso 5 - Crear Repositorios Implementadores
-
-### Implementación para Consumo de Datos Local
-```
-src/app/core/infrastructure/repositories/local
-├── user-local.repository.impl.ts
-└── product-local.repository.impl.ts
-```
-
-### Implementación para Consumo de Datos NodeJS
-```
-src/app/core/infrastructure/repositories/node
-├── user-node.repository.impl.ts
-└── product-node.repository.impl.ts
-```
-
-## Paso 6 - Agregar Providers con sus Implementadores
-
-```
+```text
 src/app/
-└── app.config.ts
+├── core/
+│   ├── domain/                 # Modelos y contratos de repositorio
+│   ├── application/usecases/   # Casos de uso
+│   └── infrastructure/        # Servicios HTTP y repositorios concretos
+├── presentation/
+│   ├── components/
+│   └── pages/
+├── app.config.ts              # Proveedores
+└── app.routes.ts              # Rutas
 ```
 
-# Funcionamiento del Frontend
+## Requisitos y ejecución
 
-## Ejecutar Frontend
-```
+Se requieren Node.js y npm compatibles con Angular 20.
+
+```bash
+npm ci
 npm run start
 ```
 
-## Urls Consumo
+Abre `http://localhost:4200`. La fuente de datos local permite probar los
+módulos sin ejecutar un backend.
 
-### Frontend
-```
-http://localhost:4200
-http://localhost:4200/users
-http://localhost:4200/products
-http://localhost:4200/junglers
+## Módulos y APIs
+
+| Módulo | Ruta del frontend | Operación del backend |
+| --- | --- | --- |
+| Usuarios | `/users` | `GET /api/users/{count}` |
+| Productos | `/products` | `GET /api/products/{count}` |
+| Música | `/music` | `GET /api/music/{count}` |
+| Personajes | `/personajes` | `GET /api/personajes/{count}` |
+| Junglers | `/junglers` | `GET /api/junglers/{count}` |
+
+La fuente de datos se selecciona independientemente por módulo en
+`src/environments/environment.ts`:
+
+```ts
+userDataSource: 'local',
+productDataSource: 'local',
+musicDataSource: 'local',
 ```
 
-### Backend NodeJS
-```
-http://localhost:3000/api/docs
-http://localhost:3000/api/users/{countUsers}
-http://localhost:3000/api/products/{countProducts}
-http://localhost:3000/api/junglers/{countJunglers}
-```
+Cada campo acepta `local`, `node` o `springboot`; Personajes permanece
+configurado con la fuente local, y Junglers se conmuta mediante su proveedor en
+`src/app/app.config.ts` (ver la sección del módulo Junglers). Los adaptadores
+locales generan datos de demostración. Node.js y Spring Boot usan las URL base
+configuradas en el mismo archivo: `http://localhost:3000` y
+`http://localhost:8080`, respectivamente. Para usar fuentes remotas, los
+servidores deben implementar los endpoints correspondientes y responder con
+arreglos que respeten los modelos.
 
-### Backend SpringBoot
-```
-http://localhost:8080/api/swagger-ui/index.html
-http://localhost:8080/api/users/{countUsers}
-http://localhost:8080/api/products/{countProducts}
-http://localhost:8080/api/junglers/{countJunglers}
-```
+La documentación de las API está disponible al iniciar los servidores:
+
+- Node.js: `http://localhost:3000/api/docs`
+- Spring Boot: `http://localhost:8080/api/swagger-ui/index.html`
+
+Este repositorio solo contiene el frontend, no los proyectos de servidor.
+[`docs/backend-integration.md`](docs/backend-integration.md) describe el
+contrato esperado por Angular y [`docs/openapi.yaml`](docs/openapi.yaml) lo
+especifica en OpenAPI 3.1 para facilitar su implementación y validación en
+ambos servidores. Estos documentos describen el contrato que consume el
+cliente; la documentación Swagger publicada por cada servidor debe mantenerse
+y validarse en el repositorio correspondiente.
+
+Cada página consume el caso de uso de su módulo. Los adaptadores local,
+Node.js y Spring Boot se seleccionan mediante los proveedores de repositorio;
+los componentes no acceden directamente a los servicios HTTP ni a las API.
 
 ## Módulo: Junglers (League of Legends)
+
 Módulo desarrollado bajo Clean Architecture con Angular Standalone Components.
 
 - **Modelo de Dominio:** `src/app/core/domain/models/jungler.model.ts`
@@ -147,8 +93,10 @@ Módulo desarrollado bajo Clean Architecture con Angular Standalone Components.
   - Organismo Tabla: `src/app/presentation/components/junglers-table/`
   - Página Contenedora: `src/app/presentation/pages/junglers/`
 
-## Conmutación de Backends con Providers
-Para alternar entre Local, Node.js y Spring Boot, se modifica exclusivamente el provider en `src/app/app.config.ts`:
+### Conmutación de Backends con Providers
+
+Para alternar entre Local, Node.js y Spring Boot en Junglers, se modifica
+exclusivamente el provider en `src/app/app.config.ts`:
 
 ```typescript
 // Para consumir Backend NodeJS:
@@ -161,18 +109,23 @@ Para alternar entre Local, Node.js y Spring Boot, se modifica exclusivamente el 
 { provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
 ```
 
-## Pruebas Unitarias y Cobertura (> 90%)
-Para ejecutar la suite de pruebas unitarias con Jest y generar el reporte de cobertura:
+## Pruebas y documentación de Angular
+
 ```bash
-npm run test:coverage
+npm test -- --runInBand
+npm run test:coverage -- --runInBand
+npm run compodoc
 ```
 
-## Documentación Técnica con Compodoc
-Para generar y consultar la documentación interactiva:
-```bash
-npm run docs
-```
-La documentación se generará en la carpeta `./documentation/`. Para servirla localmente:
-```bash
-npx compodoc -p tsconfig.doc.json -s
-```
+Las pruebas unitarias verifican los casos de uso, proveedores, repositorios,
+servicios y componentes. Jest exige una cobertura global mínima del 90% en
+sentencias, ramas, funciones y líneas. Compodoc genera la documentación de
+Angular en `documentation/`.
+
+## Estándar de los commits
+
+Usa Conventional Commits con mensajes breves en imperativo. Por ejemplo:
+
+```text
+feat(musica): agregar catálogo de canciones
+test(musica): probar selección de
