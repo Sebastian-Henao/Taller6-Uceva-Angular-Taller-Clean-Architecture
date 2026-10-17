@@ -111,6 +111,9 @@ npm run start
 ### Frontend
 ```
 http://localhost:4200
+http://localhost:4200/users
+http://localhost:4200/products
+http://localhost:4200/junglers
 ```
 
 ### Backend NodeJS
@@ -118,11 +121,58 @@ http://localhost:4200
 http://localhost:3000/api/docs
 http://localhost:3000/api/users/{countUsers}
 http://localhost:3000/api/products/{countProducts}
+http://localhost:3000/api/junglers/{countJunglers}
 ```
 
 ### Backend SpringBoot
 ```
-http://localhost:3000/api/swagger-ui/index.html
-http://localhost:3000/api/users/{countUsers}
-http://localhost:3000/api/products/{countProducts}
+http://localhost:8080/api/swagger-ui/index.html
+http://localhost:8080/api/users/{countUsers}
+http://localhost:8080/api/products/{countProducts}
+http://localhost:8080/api/junglers/{countJunglers}
+```
+
+## Módulo: Junglers (League of Legends)
+Módulo desarrollado bajo Clean Architecture con Angular Standalone Components.
+
+- **Modelo de Dominio:** `src/app/core/domain/models/jungler.model.ts`
+- **Contrato del Repositorio:** `src/app/core/domain/repositories/jungler.repository.ts`
+- **Caso de Uso:** `src/app/core/application/usecases/get-all-junglers.usecase.ts`
+- **Servicio de Datos:** `src/app/core/infrastructure/services/data.service.ts`
+- **Implementaciones del Repositorio:**
+  - Local: `src/app/core/infrastructure/repositories/local-implementation/jungler-local.repository.impl.ts`
+  - Node.js: `src/app/core/infrastructure/repositories/node-implementation/jungler-node.repository.impl.ts`
+  - Spring Boot: `src/app/core/infrastructure/repositories/springboot-implementation/jungler-springboot.repository.impl.ts`
+- **Componentes y Vistas:**
+  - Organismo Tabla: `src/app/presentation/components/junglers-table/`
+  - Página Contenedora: `src/app/presentation/pages/junglers/`
+
+## Conmutación de Backends con Providers
+Para alternar entre Local, Node.js y Spring Boot, se modifica exclusivamente el provider en `src/app/app.config.ts`:
+
+```typescript
+// Para consumir Backend NodeJS:
+{ provide: JunglerRepository, useClass: JunglerNodeRepositoryImpl },
+
+// Para consumir Backend Spring Boot:
+{ provide: JunglerRepository, useClass: JunglerSpringBootRepositoryImpl },
+
+// Para consumir datos locales simulados:
+{ provide: JunglerRepository, useClass: JunglerLocalRepositoryImpl },
+```
+
+## Pruebas Unitarias y Cobertura (> 90%)
+Para ejecutar la suite de pruebas unitarias con Jest y generar el reporte de cobertura:
+```bash
+npm run test:coverage
+```
+
+## Documentación Técnica con Compodoc
+Para generar y consultar la documentación interactiva:
+```bash
+npm run docs
+```
+La documentación se generará en la carpeta `./documentation/`. Para servirla localmente:
+```bash
+npx compodoc -p tsconfig.doc.json -s
 ```
